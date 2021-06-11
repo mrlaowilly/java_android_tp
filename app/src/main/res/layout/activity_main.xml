@@ -81,20 +81,20 @@
         />
 
     <TextView
-        android:id="@+id/textViewSunrise"
+        android:id="@+id/textViewSunset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sunrise"
+        android:text="Sunset"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewSunset"
+        android:id="@+id/textViewSunrise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sunset"
+        android:text="Sunrise"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

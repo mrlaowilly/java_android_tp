@@ -68,27 +68,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnCallApi).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AsyncRestClient arc = new AsyncRestClient(getApplicationContext(), findViewById(R.id.progressBar));
-                arc.execute(
-                        new Pair<String, String>("HTTP_METHOD", "GET"),
-                        new Pair<String, String>("HTTP_URL", "https://api.sunrise-sunset.org/json"),
-                        new Pair<String, String>("lat", "36.7201600"),
-                        new Pair<String, String>("lng", "-4.4203400"),
-                        new Pair<String, String>("formatted", "1"),
-                        new Pair<String, String>("date", "today")
-                );
-                arc.setOnReceiveDataListener(new AsyncRestClient.OnReceiveDataListener() {
-                    @Override
-                    public void onReceiveData(JSONObject jsonObject) {
-                        Log.e(">>>>>", jsonObject.toString());
-                        try {
-                            ((TextView) findViewById(R.id.textViewSunrise)).setText(jsonObject.getJSONObject("results").getString("sunrise"));
-                            ((TextView) findViewById(R.id.textViewSunset)).setText(jsonObject.getJSONObject("results").getString("sunset"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                shareLocation();
             }
         });
     }
@@ -137,6 +117,66 @@ public class MainActivity extends AppCompatActivity {
                         textView5.setText(Html.fromHtml("<font color='#6200EE'><b>Address : </b><br></font>"
                                 + addresses.get(0).getAddressLine(0)
                         ));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+    private void shareLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                //Initialize location
+                Location location = task.getResult();
+                if (location != null) {
+                    try {
+                        //Initialize geoCoder
+                        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                        //Initialize address list
+                        List<Address> addresses = geocoder.getFromLocation(
+                                location.getLatitude(), location.getLongitude(), 1
+                        );
+                        findViewById(R.id.btnCallApi).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String lat = String.valueOf(location.getLatitude());
+                                String lng = String.valueOf(location.getLongitude());
+                                Log.e("ooo", String.valueOf(lat));
+                                AsyncRestClient arc = new AsyncRestClient(getApplicationContext(), findViewById(R.id.progressBar));
+                                arc.execute(
+                                        new Pair<String, String>("HTTP_METHOD", "GET"),
+                                        new Pair<String, String>("HTTP_URL", "https://api.sunrise-sunset.org/json"),
+                                        new Pair<String, String>("lat", lat),
+                                        new Pair<String, String>("lng", lng),
+                                        new Pair<String, String>("formatted", "1"),
+                                        new Pair<String, String>("date", "today")
+                                );
+                                arc.setOnReceiveDataListener(new AsyncRestClient.OnReceiveDataListener() {
+                                    @Override
+                                    public void onReceiveData(JSONObject jsonObject) {
+                                        Log.e(">>>>>", jsonObject.toString());
+                                        try {
+                                            ((TextView) findViewById(R.id.textViewSunrise)).setText(jsonObject.getJSONObject("results").getString("sunrise"));
+                                            ((TextView) findViewById(R.id.textViewSunset)).setText(jsonObject.getJSONObject("results").getString("sunset"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
