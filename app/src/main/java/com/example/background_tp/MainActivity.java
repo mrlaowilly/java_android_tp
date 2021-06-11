@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onReceiveData(JSONObject jsonObject) {
                         Log.e(">>>>>", jsonObject.toString());
                         try {
-                            ((TextView) findViewById(R.id.textView)).setText(jsonObject.getJSONObject("results").getString("sunrise"));
+                            ((TextView) findViewById(R.id.textViewSunrise)).setText(jsonObject.getJSONObject("results").getString("sunrise"));
+                            ((TextView) findViewById(R.id.textViewSunset)).setText(jsonObject.getJSONObject("results").getString("sunset"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
