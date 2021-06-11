@@ -11,10 +11,12 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.background_tp.restClient.AsyncRestClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
                     //When permission denied
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
                 }
+            }
+        });
+        findViewById(R.id.btnCallApi).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncRestClient arc = new AsyncRestClient(getApplicationContext(), findViewById(R.id.progressBar));
+                arc.execute(
+                        new Pair<String, String>("HTTP_METHOD", "GET"),
+                        new Pair<String, String>("HTTP_URL", "https://api.sunrise-sunset.org/json"),
+                        new Pair<String, String>("lat", "36.7201600"));
             }
         });
     }

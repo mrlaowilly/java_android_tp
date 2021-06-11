@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">background_tp</string>
+    <string name="error_encode">erreur encodage</string>
+    <string name="error_url">erreur d\'url</string>
+    <string name="error_network">erreur de connection</string>
+    <string name="error_response">erreur de reponse</string>
 </resources>
