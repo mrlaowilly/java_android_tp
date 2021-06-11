@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,9 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -68,7 +72,22 @@ public class MainActivity extends AppCompatActivity {
                 arc.execute(
                         new Pair<String, String>("HTTP_METHOD", "GET"),
                         new Pair<String, String>("HTTP_URL", "https://api.sunrise-sunset.org/json"),
-                        new Pair<String, String>("lat", "36.7201600"));
+                        new Pair<String, String>("lat", "36.7201600"),
+                        new Pair<String, String>("lng", "-4.4203400"),
+                        new Pair<String, String>("formatted", "1"),
+                        new Pair<String, String>("date", "today")
+                );
+                arc.setOnReceiveDataListener(new AsyncRestClient.OnReceiveDataListener() {
+                    @Override
+                    public void onReceiveData(JSONObject jsonObject) {
+                        Log.e(">>>>>", jsonObject.toString());
+                        try {
+                            ((TextView) findViewById(R.id.textView)).setText(jsonObject.getJSONObject("results").getString("sunrise"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
     }
